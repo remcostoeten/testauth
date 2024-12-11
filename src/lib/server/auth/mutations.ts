@@ -45,7 +45,9 @@ export async function handleEmailLogin(formData: FormData) {
       picture: user.picture || undefined
     })
 
-    return { success: true, user }
+    // Return the user data without the password
+    const { password: _, ...userWithoutPassword } = user
+    return { success: true, user: userWithoutPassword }
   } catch (error) {
     console.error('Login error:', error)
     throw error instanceof Error ? error : new Error('Authentication failed')

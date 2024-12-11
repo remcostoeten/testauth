@@ -1,6 +1,6 @@
 'use client'
 
-import { Logo } from '@/components/Logo'
+import { Logo } from '@/components/theme/logo'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -21,7 +21,7 @@ export default function Header() {
     <header className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
       <div className="flex items-center gap-6">
         <Link href={user ? "/dashboard" : "/"} className="transition-opacity hover:opacity-80">
-          <Logo />
+          <Logo hasLink={true} />
         </Link>
         <Link 
           href="/docs" 

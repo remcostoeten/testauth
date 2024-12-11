@@ -236,7 +236,6 @@ export function Logo({
 	hasLink = false,
 	linkTo = '/',
 	tooltipContent = 'Home',
-	hasTooltip = false,
 	onAnimationComplete
 }: ShieldLogoProps) {
 	const { theme, mounted } = useMountedTheme()

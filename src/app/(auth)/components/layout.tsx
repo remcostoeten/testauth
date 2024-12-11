@@ -14,7 +14,7 @@ export function AuthLayout({ children, title, description }: AuthLayoutProps) {
     <div className="flex min-h-screen flex-col bg-zinc-950">
       <main className="flex flex-">
         <div className="flex flex-1 items-center justify-center px-4 sm:px-6 lg:px-8">
-   <div className="w-full max-w-[350px] space-y-6 overflow-hidden ">
+   <div className="w-full max-w-[350px] space-y-6 overflow-hidden                                               ">
             <div className="space-y-2">
               <h1 className="text-2xl font-medium tracking-tight text-zinc-100">{title}</h1>
               <GridPattern

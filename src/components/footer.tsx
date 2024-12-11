@@ -1,7 +1,17 @@
+'use client'
+
 import Link from 'next/link'
 import { Heart } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 export function Footer() {
+  const pathname = usePathname()
+  const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register')
+
+  if (isAuthPage) {
+    return null
+  }
+
   return (
     <footer className="border-t border-zinc-800 bg-zinc-950 py-4">
       <div className="container flex items-center justify-between">
