@@ -13,12 +13,16 @@ type UserContextType = {
   user: UserData | null
   loading: boolean
   logout: () => Promise<void>
+  refresh: () => Promise<void>
+  setUser: (user: UserData | null) => void
 }
 
 const UserContext = createContext<UserContextType>({
   user: null,
   loading: true,
   logout: async () => {},
+  refresh: async () => {},
+  setUser: () => {}
 })
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
@@ -26,27 +30,32 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
+  const refresh = async () => {
+    try {
+      const res = await fetch('/api/auth/me')
+      const data = await res.json()
+      if (data.user) {
+        setUser(data.user)
+      }
+    } catch (error) {
+      console.error('Failed to refresh user:', error)
+    }
+  }
+
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          setUser(data.user)
-          router.refresh() // Force a refresh after login
-        }
-      })
+    refresh()
       .finally(() => setLoading(false))
-  }, [router])
+  }, [])
 
   const logout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     setUser(null)
-    router.refresh() // Force a refresh after logout
+    router.refresh()
     router.push('/login')
   }
 
   return (
-    <UserContext.Provider value={{ user, loading, logout }}>
+    <UserContext.Provider value={{ user, loading, logout, refresh, setUser }}>
       {children}
     </UserContext.Provider>
   )

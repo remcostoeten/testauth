@@ -10,9 +10,16 @@ import { setUserCookie } from '@/lib/auth'
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
+  const state = searchParams.get('state')
+  const storedState = request.cookies.get('oauth_state')?.value
   
   if (!code) {
     return new Response('No code provided', { status: 400 })
+  }
+
+  // Verify state to prevent CSRF attacks
+  if (!state || !storedState || state !== storedState) {
+    return new Response('Invalid state', { status: 400 })
   }
 
   try {
@@ -52,16 +59,31 @@ export async function GET(request: NextRequest) {
       return new Response(`Failed to get user data: ${userData.error}`, { status: 400 })
     }
 
+    // Verify email is verified by Google
+    if (!userData.verified_email) {
+      return new Response('Email not verified with Google', { status: 400 })
+    }
+
+    // Store refresh token if provided
+    if (tokens.refresh_token) {
+      // TODO: Store refresh_token securely in database
+      // This should be associated with the user's account
+      // await prisma.user.update({
+      //   where: { email: userData.email },
+      //   data: { googleRefreshToken: tokens.refresh_token }
+      // })
+    }
+
     // Set user cookie
     await setUserCookie({
       email: userData.email,
       name: userData.name,
-      picture: userData.picture,
+      picture: userData.picture || undefined,
       id: userData.id,
     })
 
-    // Redirect to home page
-    return NextResponse.redirect(new URL('/', request.url))
+    // Redirect to dashboard (consistent with other auth flows)
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   } catch (error) {
     console.error('Auth error:', error)
     return new Response('Authentication failed', { status: 500 })

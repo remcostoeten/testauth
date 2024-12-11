@@ -1,0 +1,41 @@
+:root {
+  --debug: 0;
+  
+  --context-bg: hsl(0deg 0% 99%);
+  --bg-container: hsl(0deg 0% 96%);
+  --bg-button: hsl(179deg 7% 97%);
+  --color-button: hsl(359deg 1% 35%);
+
+  --color-red: color(display-p3 0.95 0.06 0.02);
+  --color-orange: color(display-p3 0.97 0.61 0.07);
+  --color-olive: color(display-p3 0.83 0.87 0.04);
+  --color-lime: color(display-p3 0.31 0.89 0.05);
+  --color-teal: color(display-p3 0.12 0.88 0.88);
+  --color-tealer: color(display-p3 0.15 0.8 0.93);
+  --color-blue: color(display-p3 0.14 0.47 0.99);
+  --color-purple: color(display-p3 0.38 0.14 0.99);
+  --color-purpler: color(display-p3 0.73 0.04 0.94);
+  --color-pink: color(display-p3 0.93 0.03 0.85);
+}
+
+[data-theme="dark"] {
+  --context-bg: hsl(0deg 0% 8%);
+  --bg-container: hsl(0deg 0% 10%);
+  --bg-button: var(--bg-container);
+  --color-button: hsl(0deg 0% 66%);
+}
+
+@supports not (color: color(display-p3 0.93 0.03 0.85)) {
+  :root {
+    --color-red: hsl(3 93% 48%);
+    --color-orange: hsl(26 91% 52%);
+    --color-olive: hsl(65 89% 46%);
+    --color-lime: hsl(122 86% 48%);
+    --color-teal: hsl(181 78% 50%);
+    --color-tealer: hsl(193 76% 53%);
+    --color-blue: hsl(219 95% 56%);
+    --color-purple: hsl(269 95% 56%);
+    --color-purpler: hsl(292 93% 47%);
+    --color-pink: hsl(327 96% 47%);
+  }
+}

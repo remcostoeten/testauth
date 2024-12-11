@@ -1,16 +1,13 @@
 import { getSession } from '@/lib/session'
+import { redirect } from 'next/navigation'
 
 export default async function HomePage() {
-  const { user, isAuthenticated } = await getSession()
+  const { isAuthenticated } = await getSession()
   
-  return (
-    <div>
-      {isAuthenticated ? (
-        <p>Welcome back, {user?.name}</p>
-      ) : (
-        <p>Please log in</p>
-      )}
-    </div>
-  )
+  if (isAuthenticated) {
+    redirect('/dashboard')
+  } else {
+    redirect('/login')
+  }
 }
 

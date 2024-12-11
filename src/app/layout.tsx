@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { UserProvider } from '@/contexts/user-context'
+import Header from "@/components/header";
+import { Footer } from "@/components/footer";
+import { Toaster } from 'sonner'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,11 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      <body   
+        className={`${geistSans.variable} ${geistMono.variable} bg-zinc-950 antialiased`}
       >
         <UserProvider>
+          <Header />
           {children}
+          <Footer />   
+          <Toaster richColors position="top-center" />
         </UserProvider>
       </body>
     </html>
