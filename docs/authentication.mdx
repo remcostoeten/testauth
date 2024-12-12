@@ -1,0 +1,161 @@
+# Authentication System
+
+Our authentication system combines custom JWT-based authentication with OAuth2 providers, offering a flexible and secure solution for user management.
+
+## Features
+
+- Custom JWT implementation
+- OAuth2 integration (Google, GitHub)
+- Secure cookie-based session management
+- Protected routes and API endpoints
+- TypeScript support throughout
+
+## Implementation
+
+### JWT Authentication
+
+```typescript
+// Example of JWT token creation
+const token = await new SignJWT(user)
+  .setProtectedHeader({ alg: 'HS256' })
+  .setIssuedAt()
+  .setExpirationTime('1h')
+  .sign(await getJwtSecretKey())
+```
+
+### Cookie Management
+
+```typescript
+// Setting secure cookie
+cookies().set('user-token', token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: 3600,
+  path: '/',
+})
+```
+
+### Protected Routes
+
+To protect a route, use the auth middleware:
+
+```typescript
+// Example of protected API route
+export async function GET() {
+  const user = await getUserFromCookie()
+  if (!user) {
+    return new NextResponse("Unauthorized", { status: 401 })
+  }
+  // ... handle authorized request
+}
+```
+
+## OAuth2 Integration
+
+### Google OAuth
+
+1. Configure in Google Cloud Console:
+   ```env
+   GOOGLE_CLIENT_ID=your_client_id
+   GOOGLE_CLIENT_SECRET=your_client_secret
+   ```
+
+2. Set up redirect URIs:
+   - Development: `http://localhost:3000/api/auth/google/callback`
+   - Production: `https://your-domain.com/api/auth/google/callback`
+
+### GitHub OAuth
+
+1. Configure in GitHub Developer Settings:
+   ```env
+   GITHUB_CLIENT_ID=your_client_id
+   GITHUB_CLIENT_SECRET=your_client_secret
+   ```
+
+2. Set up redirect URIs:
+   - Development: `http://localhost:3000/api/auth/github/callback`
+   - Production: `https://your-domain.com/api/auth/github/callback`
+
+## User Model
+
+```prisma
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  password  String
+  picture   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  notes     Note[]
+}
+```
+
+## Security Considerations
+
+1. **JWT Security**
+   - Short-lived tokens (1 hour)
+   - Secure algorithm (HS256)
+   - Environment-based secrets
+
+2. **Cookie Security**
+   - HttpOnly cookies
+   - Strict SameSite policy
+   - Secure in production
+   - CSRF protection
+
+3. **OAuth Security**
+   - State parameter validation
+   - Strict redirect URI matching
+   - Scope limitations
+
+## Usage Examples
+
+### Protected API Route
+
+```typescript
+import { getUserFromCookie } from "@/lib/auth"
+
+export async function GET() {
+  const user = await getUserFromCookie()
+  if (!user) {
+    return new NextResponse("Unauthorized", { status: 401 })
+  }
+  return NextResponse.json({ user })
+}
+```
+
+### Protected Component
+
+```typescript
+'use client'
+
+import { useAuth } from "@/hooks/useAuth"
+
+export default function ProtectedComponent() {
+  const { user, loading } = useAuth()
+
+  if (loading) return <div>Loading...</div>
+  if (!user) return <div>Please log in</div>
+
+  return <div>Welcome, {user.name}!</div>
+}
+```
+
+### Login Flow
+
+```typescript
+const login = async (provider: 'google' | 'github') => {
+  const width = 500
+  const height = 600
+  const left = window.screenX + (window.outerWidth - width) / 2
+  const top = window.screenY + (window.outerHeight - height) / 2
+
+  window.open(
+    `/api/auth/${provider}/login`,
+    'Auth',
+    `width=${width},height=${height},left=${left},top=${top}`
+  )
+}
+``` 

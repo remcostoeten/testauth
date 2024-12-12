@@ -1,0 +1,168 @@
+# Getting Started
+
+This guide will help you set up and run the project locally.
+
+## Prerequisites
+
+- Node.js 18+ and npm
+- Git
+- SQLite (included)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/your-repo-name.git
+cd your-repo-name
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your configuration:
+```env
+# Database
+DATABASE_URL="file:./dev.db"
+
+# Authentication
+JWT_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+
+# OAuth Providers
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+```
+
+4. Initialize the database:
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+## Development
+
+Start the development server:
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` to see your application.
+
+## Project Structure
+
+```
+├── src/
+│   ├── app/              # Next.js App Router
+│   ├── components/       # React components
+│   ├── lib/             # Utilities and configurations
+│   ├── hooks/           # Custom React hooks
+│   └── styles/          # Global styles
+├── prisma/              # Database schema and migrations
+├── public/             # Static assets
+└── docs/              # Documentation
+```
+
+## Key Files
+
+- `src/lib/auth.ts` - Authentication utilities
+- `src/lib/prisma.ts` - Database client
+- `src/components/quick-notes-widget.tsx` - Notes widget
+- `prisma/schema.prisma` - Database schema
+
+## Configuration
+
+### Database
+
+The project uses Prisma with SQLite by default. To modify the schema:
+
+1. Edit `prisma/schema.prisma`
+2. Run migrations:
+```bash
+npx prisma migrate dev --name your_migration_name
+```
+
+### Authentication
+
+1. Create OAuth applications:
+   - [Google Cloud Console](https://console.cloud.google.com)
+   - [GitHub Developer Settings](https://github.com/settings/developers)
+
+2. Add redirect URIs:
+   - Development: `http://localhost:3000/api/auth/{provider}/callback`
+   - Production: `https://your-domain.com/api/auth/{provider}/callback`
+
+## Development Tools
+
+### Quick Notes Widget
+
+The widget is automatically available on all pages. To customize its position:
+
+```typescript
+// src/app/layout.tsx
+<QuickNotesWidget position="bottom-right" />
+```
+
+### Theme System
+
+The project includes a dark mode toggle:
+
+```typescript
+const { isDark, toggleDarkMode } = useTheme()
+```
+
+## Common Issues
+
+1. **Database Connection**
+   - Ensure DATABASE_URL is correct
+   - Run `npx prisma generate` after schema changes
+
+2. **OAuth Errors**
+   - Verify redirect URIs match exactly
+   - Check client ID and secret are correct
+   - Ensure environment variables are loaded
+
+3. **Build Errors**
+   - Clear `.next` directory
+   - Delete `node_modules` and reinstall
+   - Check TypeScript errors
+
+## Roadmap
+
+### Documentation and Examples
+- Comprehensive documentation with real-world examples
+- Interactive component playground
+- API reference with TypeScript types
+- Best practices and patterns guide
+
+### Feature Branch System
+- Easy checkout feature branches for specific functionality
+- Clear documentation for each feature branch
+- Minimal core with opt-in complexity
+- Branch naming convention for easy navigation
+
+### Feature Flags
+- Toggle features on/off without code changes
+- Environment-based feature enabling
+- User-level feature toggles
+- A/B testing capabilities
+
+### Database Flexibility
+- Script to transform between Prisma and Drizzle
+- Database agnostic core functionality
+- Easy migration between different ORMs
+- Schema validation and type generation
+
+### Containerization
+- Docker setup for development and production
+- Docker Compose for local development
+- Multi-stage builds for optimization
+- Container orchestration examples

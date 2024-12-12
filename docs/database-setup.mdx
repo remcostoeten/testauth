@@ -1,0 +1,218 @@
+# Database Configuration Guide
+
+This guide explains how to use the database switching functionality in our application, which supports both PostgreSQL and SQLite databases.
+
+## Quick Start
+
+```bash
+# Switch to PostgreSQL
+npm run switch-db postgresql
+
+# Switch to SQLite
+npm run switch-db sqlite
+```
+
+## Features
+
+- 🔄 Easy switching between PostgreSQL and SQLite
+- 🐳 Automated Docker setup for PostgreSQL
+- ☁️ Cloud provider support for both databases
+- 🔐 Customizable database credentials
+- 🚀 Automatic environment configuration
+- ⚡ Zero-config default options
+
+## PostgreSQL Setup Options
+
+### 1. Docker Setup (Recommended)
+
+The easiest way to get started with PostgreSQL:
+
+```bash
+npm run switch-db postgresql
+# Choose option 1: Use Docker
+```
+
+**Default Configuration:**
+- User: postgres
+- Password: postgres
+- Database: testauth
+- Port: 5432
+
+You can customize these values during setup.
+
+#### Prerequisites
+- Docker installed and running
+- Available port (default: 5432)
+
+#### What it does:
+- Creates docker-compose.yml
+- Sets up PostgreSQL container
+- Configures environment variables
+- Initializes the database
+- Handles health checks
+
+### 2. Cloud Provider
+
+For production or cloud-hosted databases:
+
+```bash
+npm run switch-db postgresql
+# Choose option 2: Use Cloud Provider
+```
+
+You'll need to provide:
+- Host URL
+- Port
+- Database name
+- Username
+- Password
+
+Supports any PostgreSQL-compatible service:
+- Amazon RDS
+- Google Cloud SQL
+- Azure Database for PostgreSQL
+- DigitalOcean Managed Databases
+- Others
+
+## SQLite Setup Options
+
+### 1. Local Database
+
+Perfect for development:
+
+```bash
+npm run switch-db sqlite
+# Choose option 1: Use Local Database
+```
+
+Options:
+- dev.db (default)
+- local.db (optional)
+
+### 2. Cloud Provider
+
+For services like Turso:
+
+```bash
+npm run switch-db sqlite
+# Choose option 2: Use Cloud Provider
+```
+
+Provide your cloud SQLite URL when prompted.
+
+## Environment Configuration
+
+The script manages these files:
+- `.env`
+- `.env.local` (if possible)
+
+Example configuration:
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/testauth
+# or
+DATABASE_URL=file:./dev.db
+```
+
+## Prisma Schema Updates
+
+The script automatically:
+1. Updates the database provider
+2. Configures the connection URL
+3. Runs necessary Prisma commands
+4. Handles migrations
+
+## Troubleshooting
+
+### Docker Issues
+
+If you encounter Docker-related problems:
+
+1. **Docker not running:**
+   ```bash
+   # Start Docker desktop or service
+   sudo systemctl start docker # Linux
+   # or launch Docker Desktop
+   ```
+
+2. **Port in use:**
+   ```bash
+   # Find process using port 5432
+   lsof -i :5432
+   # Choose different port during setup
+   ```
+
+3. **Container conflicts:**
+   ```bash
+   # Remove existing container
+   docker rm -f testauth-postgres
+   ```
+
+### Database Connection
+
+Common issues and solutions:
+
+1. **PostgreSQL connection refused:**
+   - Check if Docker is running
+   - Verify port availability
+   - Check credentials
+
+2. **SQLite file permission:**
+   - Ensure write permissions in prisma directory
+   - Check file ownership
+
+### Environment Variables
+
+If environment variables aren't working:
+
+1. Check file permissions
+2. Verify file contents
+3. Restart your application
+
+## Best Practices
+
+1. **Development:**
+   - Use SQLite for rapid development
+   - Use Docker PostgreSQL for production-like environment
+
+2. **Production:**
+   - Use managed PostgreSQL service
+   - Set up proper backups
+   - Monitor database health
+
+3. **Version Control:**
+   - Don't commit .env files
+   - Keep docker-compose.yml in version control
+   - Document database requirements
+
+## Security Notes
+
+1. **Docker setup:**
+   - Change default credentials
+   - Limit port exposure
+   - Use volumes for persistence
+
+2. **Cloud providers:**
+   - Use strong passwords
+   - Enable SSL/TLS
+   - Implement proper firewall rules
+
+## Contributing
+
+To extend or modify the database configuration:
+
+1. Edit `scripts/switch-database.js`
+2. Test both PostgreSQL and SQLite setups
+3. Update this documentation
+4. Submit a pull request
+
+## Support
+
+If you encounter issues:
+
+1. Check the troubleshooting guide
+2. Review Docker logs
+3. Check Prisma documentation
+4. Open an issue with:
+   - Database provider
+   - Error messages
+   - Steps to reproduce 
